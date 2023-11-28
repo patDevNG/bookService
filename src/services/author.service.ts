@@ -1,18 +1,18 @@
-import { injectable } from 'inversify';
-import { AuthorRepository } from '../data/repositories/author.repository';
-import { IAuthor } from '../data/entities/author.entities';
+import { injectable } from 'inversify'
+import { AuthorRepository } from '../data/repositories/author.repository'
+import { IAuthor } from '../data/entities/author.entities'
 
 interface IAuthorService {
-  create(author: IAuthor): Promise<IAuthor>;
-  getAuthorByReferenceId(referenceId: string): Promise<IAuthor | null>;
+  create(author: IAuthor): Promise<IAuthor>
+  getAuthorByReferenceId(referenceId: string): Promise<IAuthor | null>
 }
 
 @injectable()
 export class AuthorService implements IAuthorService {
-  private authorRepository: AuthorRepository;
+  private authorRepository: AuthorRepository
 
   constructor(authorRepository: AuthorRepository) {
-    this.authorRepository = authorRepository;
+    this.authorRepository = authorRepository
   }
 
   /**
@@ -21,7 +21,7 @@ export class AuthorService implements IAuthorService {
    * @returns author
    */
   public async create(author: IAuthor): Promise<IAuthor> {
-    return await this.authorRepository.create(author);
+    return await this.authorRepository.create(author)
   }
 
   /**
@@ -29,7 +29,9 @@ export class AuthorService implements IAuthorService {
    * @param referenceId
    * @returns
    */
-  public async getAuthorByReferenceId(referenceId: string): Promise<IAuthor | null> {
-    return await this.authorRepository.findByReferenceId(referenceId);
+  public async getAuthorByReferenceId(
+    referenceId: string
+  ): Promise<IAuthor | null> {
+    return await this.authorRepository.findByReferenceId(referenceId)
   }
 }

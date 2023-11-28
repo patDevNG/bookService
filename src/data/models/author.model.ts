@@ -1,7 +1,7 @@
-import mongoose, { Schema } from "mongoose";
-import { IAuthor } from "../entities/author.entities";
+import mongoose, { Schema } from 'mongoose'
+import { IAuthor } from '../entities/author.entities'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const mongooseSerial = require("mongoose-serial");
+const mongooseSerial = require('mongoose-serial')
 
 const authorSchema = new Schema(
   {
@@ -12,17 +12,16 @@ const authorSchema = new Schema(
     referenceId: { type: String },
   },
   { timestamps: true }
-);
+)
 
 authorSchema.plugin(mongooseSerial, {
-  field: "referenceId",
-  prefix: "AU",
-  separator: "-",
+  field: 'referenceId',
+  prefix: 'AU',
+  separator: '-',
   digits: 6,
-  initCount: "monthly",
-});
+  initCount: 'monthly',
+})
 
-interface IAuthorModel extends IAuthor {};
+interface IAuthorModel extends IAuthor {}
 
-export const AuthorModel = mongoose.model<IAuthorModel>("Author", authorSchema);
-
+export const AuthorModel = mongoose.model<IAuthorModel>('Author', authorSchema)

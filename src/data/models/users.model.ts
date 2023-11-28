@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import mongoose, { Schema } from "mongoose";
-import { IUser } from "../entities/user.entities";
-const mongooseSerial = require("mongoose-serial");
+import mongoose, { Schema } from 'mongoose'
+import { IUser } from '../entities/user.entities'
+const mongooseSerial = require('mongoose-serial')
 
 const userSchema = new Schema(
   {
@@ -14,17 +14,17 @@ const userSchema = new Schema(
     password: { type: String, required: true },
   },
   { timestamps: true }
-);
+)
 
 userSchema.plugin(mongooseSerial, {
-  field: "referenceId",
-  prefix: "LIB",
-  separator: "-",
+  field: 'referenceId',
+  prefix: 'LIB',
+  separator: '-',
   digits: 6,
-  initCount: "monthly",
-});
+  initCount: 'monthly',
+})
 
 interface IUserModel extends IUser {}
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export const UserModel = mongoose.model<IUserModel>("User", userSchema);
+export const UserModel = mongoose.model<IUserModel>('User', userSchema)

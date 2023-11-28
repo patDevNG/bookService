@@ -1,17 +1,17 @@
-import { injectable } from "inversify";
-import { UserModel } from "../models/users.model";
-import { IUser } from "../entities/user.entities";
+import { injectable } from 'inversify'
+import { UserModel } from '../models/users.model'
+import { IUser } from '../entities/user.entities'
 
 interface IUserRepository {
-  create(user: IUser): Promise<IUser>;
-  findById(id: string): Promise<IUser | null>;
-  findByReferenceId(referenceId: string): Promise<IUser | null>;
-  findByEmail(email: string): Promise<IUser | null>;
+  create(user: IUser): Promise<IUser>
+  findById(id: string): Promise<IUser | null>
+  findByReferenceId(referenceId: string): Promise<IUser | null>
+  findByEmail(email: string): Promise<IUser | null>
 }
 
 @injectable()
 export class UserRepository implements IUserRepository {
-  private userModel = UserModel;
+  private userModel = UserModel
 
   /**
    *
@@ -19,7 +19,7 @@ export class UserRepository implements IUserRepository {
    * @returns user
    */
   public async create(user: IUser): Promise<IUser> {
-    return await this.userModel.create(user);
+    return await this.userModel.create(user)
   }
 
   /**
@@ -28,7 +28,7 @@ export class UserRepository implements IUserRepository {
    * @returns
    */
   public async findById(id: string): Promise<IUser | null> {
-    return await this.userModel.findById(id).lean();
+    return await this.userModel.findById(id).lean()
   }
 
   /**
@@ -37,7 +37,7 @@ export class UserRepository implements IUserRepository {
    * @returns
    */
   public async findByReferenceId(referenceId: string): Promise<IUser | null> {
-    return await this.userModel.findOne({ referenceId }).lean();
+    return await this.userModel.findOne({ referenceId }).lean()
   }
 
   /**
@@ -46,7 +46,7 @@ export class UserRepository implements IUserRepository {
    * @returns
    */
   public async findByEmail(email: string): Promise<IUser | null> {
-    return await this.userModel.findOne({ email }).lean();
-    ``;
+    return await this.userModel.findOne({ email }).lean()
+    ;``
   }
 }

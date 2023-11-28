@@ -1,18 +1,18 @@
-import { injectable } from "inversify";
-import { CategoryRepository } from "../data/repositories/category.repository";
-import { ICategory } from "../data/entities/category.entities";
+import { injectable } from 'inversify'
+import { CategoryRepository } from '../data/repositories/category.repository'
+import { ICategory } from '../data/entities/category.entities'
 
 export interface ICategoryService {
-  create(category: ICategory): Promise<ICategory>;
-  getCategoryByReferenceId(referenceId: string): Promise<ICategory | null>;
+  create(category: ICategory): Promise<ICategory>
+  getCategoryByReferenceId(referenceId: string): Promise<ICategory | null>
 }
 
 @injectable()
 export class CategoryService implements ICategoryService {
-  private categoryRepository: CategoryRepository;
+  private categoryRepository: CategoryRepository
 
   constructor(categoryRepository: CategoryRepository) {
-    this.categoryRepository = categoryRepository;
+    this.categoryRepository = categoryRepository
   }
 
   /**
@@ -21,7 +21,7 @@ export class CategoryService implements ICategoryService {
    * @returns category
    */
   public async create(category: ICategory): Promise<ICategory> {
-    return await this.categoryRepository.create(category);
+    return await this.categoryRepository.create(category)
   }
 
   /**
@@ -29,7 +29,9 @@ export class CategoryService implements ICategoryService {
    * @param referenceId
    * @returns
    */
-  public async getCategoryByReferenceId(referenceId: string): Promise<ICategory | null> {
-    return await this.categoryRepository.findByReferenceId(referenceId);
+  public async getCategoryByReferenceId(
+    referenceId: string
+  ): Promise<ICategory | null> {
+    return await this.categoryRepository.findByReferenceId(referenceId)
   }
 }

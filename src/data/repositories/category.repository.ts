@@ -1,15 +1,15 @@
-import { injectable } from 'inversify';
-import { CategoryModel } from '../models/categories.model';
-import { ICategory} from '../entities/category.entities';
+import { injectable } from 'inversify'
+import { CategoryModel } from '../models/categories.model'
+import { ICategory } from '../entities/category.entities'
 
 interface ICategoryRepository {
-  create(category: ICategory): Promise<ICategory>;
-  findByReferenceId(referenceId: string): Promise<ICategory | null>;
+  create(category: ICategory): Promise<ICategory>
+  findByReferenceId(referenceId: string): Promise<ICategory | null>
 }
 
 @injectable()
 export class CategoryRepository implements ICategoryRepository {
-  private categoryModel = CategoryModel;
+  private categoryModel = CategoryModel
 
   /**
    *
@@ -17,7 +17,7 @@ export class CategoryRepository implements ICategoryRepository {
    * @returns category
    */
   public async create(category: ICategory): Promise<ICategory> {
-    return await this.categoryModel.create(category);
+    return await this.categoryModel.create(category)
   }
 
   /**
@@ -25,7 +25,9 @@ export class CategoryRepository implements ICategoryRepository {
    * @param referenceId
    * @returns
    */
-  public async findByReferenceId(referenceId: string): Promise<ICategory | null> {
-    return await this.categoryModel.findOne({ referenceId }).lean();
+  public async findByReferenceId(
+    referenceId: string
+  ): Promise<ICategory | null> {
+    return await this.categoryModel.findOne({ referenceId }).lean()
   }
 }

@@ -1,21 +1,26 @@
-import { injectable } from "inversify";
-import { BookRepository } from '../data/repositories/book.repository';
-import { IBook } from "../data/entities/book.entities";
+import { injectable } from 'inversify'
+import { BookRepository } from '../data/repositories/book.repository'
+import { IBook } from '../data/entities/book.entities'
 
 export interface IBookService {
-  create(book: IBook): Promise<IBook>;
-  getBookByReferenceId(referenceId: string): Promise<IBook | null>;
-  searchBook(authorOrTitle: string): Promise<IBook | null>;
-  checkOutBook(id: string, userId: string, checkInDate: Date): Promise<IBook | null>;
-  checkInBook(id: string, userId: string): Promise<IBook | null>;
+  create(book: IBook): Promise<IBook>
+  getBookByReferenceId(referenceId: string): Promise<IBook | null>
+  searchBook(title: string | null, author: string | null): Promise<IBook[]>
+  checkOutBook(
+    id: string,
+    userId: string,
+    checkInDate: Date
+  ): Promise<IBook | null>
+  checkInBook(id: string, userId: string): Promise<IBook | null>
+  getBooks(): Promise<IBook[]>
 }
 
 @injectable()
 export class BookService implements IBookService {
-  private bookRepository: BookRepository;
+  private bookRepository: BookRepository
 
   constructor(bookRepository: BookRepository) {
-    this.bookRepository = bookRepository;
+    this.bookRepository = bookRepository
   }
 
   /**
@@ -24,7 +29,7 @@ export class BookService implements IBookService {
    * @returns book
    */
   public async create(book: IBook): Promise<IBook> {
-    return await this.bookRepository.create(book);
+    return await this.bookRepository.create(book)
   }
 
   /**
@@ -32,8 +37,10 @@ export class BookService implements IBookService {
    * @param referenceId
    * @returns
    */
-  public async getBookByReferenceId(referenceId: string): Promise<IBook | null> {
-    return await this.bookRepository.findByReferenceId(referenceId);
+  public async getBookByReferenceId(
+    referenceId: string
+  ): Promise<IBook | null> {
+    return await this.bookRepository.findByReferenceId(referenceId)
   }
 
   /**
@@ -41,8 +48,11 @@ export class BookService implements IBookService {
    * @param authorOrTitle
    * @returns
    */
-  public async searchBook(authorOrTitle: string): Promise<IBook | null> {
-    return await this.bookRepository.searchBook(authorOrTitle);
+  public async searchBook(
+    title: string | null,
+    author: string | null
+  ): Promise<IBook[]> {
+    return await this.bookRepository.searchBook(title, author)
   }
 
   /**
@@ -51,8 +61,12 @@ export class BookService implements IBookService {
    * @param userId
    * @param checkInDate
    */
-  public async checkOutBook(id: string, userId: string, checkInDate: Date): Promise<IBook | null> {
-    return await this.bookRepository.checkOutBook(id, userId, checkInDate);
+  public async checkOutBook(
+    id: string,
+    userId: string,
+    checkInDate: Date
+  ): Promise<IBook | null> {
+    return await this.bookRepository.checkOutBook(id, userId, checkInDate)
   }
 
   /**
@@ -61,6 +75,14 @@ export class BookService implements IBookService {
    * @param userId
    */
   public async checkInBook(id: string, userId: string): Promise<IBook | null> {
-    return await this.bookRepository.checkInBook(id, userId);
+    return await this.bookRepository.checkInBook(id, userId)
+  }
+
+  /**
+   * getBooks
+   * @returns
+   */
+  public async getBooks(): Promise<IBook[]> {
+    return await this.bookRepository.getBooks()
   }
 }

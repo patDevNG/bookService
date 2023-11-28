@@ -1,105 +1,153 @@
-import {Response, Request, NextFunction } from 'express';
-import { controller, httpGet, httpPost } from 'inversify-express-utils';
-import { BookService } from '../services/book.service';
-import { errorHandler } from '../middlewares'
-import logger from '../utils/logger';
+import { Response, Request } from 'express'
+import { controller, httpGet, httpPost } from 'inversify-express-utils'
+import { BookService } from '../services/book.service'
+import logger from '../utils/logger'
+import { ResponseHandler } from '../utils/errors/responseHandler'
+import httpStatus from 'http-status'
+import { validateCreateBook } from '../middlewares/validators'
 
 interface IBookController {
-    createBook(req: Request, res: Response, next: NextFunction): Promise<Response | undefined>;
-    getBookByReferenceId(req: Request, res: Response, next: NextFunction): Promise<Response | undefined>;
-    searchBook(req: Request, res: Response, next: NextFunction): Promise<Response | undefined>;
-    checkOutBook(req: Request, res: Response, next: NextFunction): Promise<Response | undefined>;
-    checkInBook(req: Request, res: Response, next: NextFunction): Promise<Response | undefined>;
+  createBook(req: Request, res: Response): Promise<Response | undefined>
+  getBookByReferenceId(
+    req: Request,
+    res: Response
+  ): Promise<Response | undefined>
+  searchBook(req: Request, res: Response): Promise<Response | undefined>
+  checkOutBook(req: Request, res: Response): Promise<Response | undefined>
+  checkInBook(req: Request, res: Response): Promise<Response | undefined>
+  getBooks(req: Request, res: Response): Promise<Response | undefined>
 }
 
 @controller('/v1/book')
 export class BookController implements IBookController {
-    private readonly bookService: BookService;
+  private readonly bookService: BookService
 
-    constructor(bookService: BookService) {
-        this.bookService = bookService;
+  constructor(bookService: BookService) {
+    this.bookService = bookService
+  }
+
+  @httpPost('/create', validateCreateBook)
+
+  /**
+   * createBook
+   * @param req
+   * @param res
+   * @returns Book
+   */
+  async createBook(req: Request, res: Response) {
+    try {
+      const result = await this.bookService.create(req.body)
+
+      return ResponseHandler.successResponse(res, result, httpStatus.CREATED)
+    } catch (error) {
+      logger.error(error as string)
+
+      return ResponseHandler.errorResponse(
+        res,
+        error as string,
+        httpStatus.INTERNAL_SERVER_ERROR
+      )
     }
+  }
 
-    @httpPost('/create-book', errorHandler)
+  @httpGet('/:referenceId')
+  async getBookByReferenceId(req: Request, res: Response) {
+    try {
+      const result = await this.bookService.getBookByReferenceId(
+        req.params.referenceId
+      )
 
-    /**
-     * createBook
-     * @param req
-     * @param res
-     * @returns Book
-     */
-    async createBook(req: Request, res: Response, next: NextFunction) {
-      try {
-        const result = await this.bookService.create(req.body);
+      return ResponseHandler.successResponse(res, result, httpStatus.OK)
+    } catch (error) {
+      logger.error(error as string)
 
-        return res.status(201).json({
-          status: 'success',
-          data: result
-        });
-      } catch (error) {
-        logger.error(error as string);
-        next(error);
-      }
+      return ResponseHandler.errorResponse(
+        res,
+        error as string,
+        httpStatus.INTERNAL_SERVER_ERROR
+      )
     }
+  }
 
-    @httpGet('/:referenceId', errorHandler)
-    async getBookByReferenceId(req: Request, res: Response, next: NextFunction) {
-      try {
-        const result = await this.bookService.getBookByReferenceId(req.params.referenceId);
+  @httpGet('/search')
+  async searchBook(req: Request, res: Response) {
+    try {
+      const { title, author } = req.query as any
 
-        return res.status(200).json({
-          status: 'success',
-          data: result
-        });
-      } catch (error) {
-        logger.error(error as string);
-        next(error);
-      }
+      if (!title && !author)
+        return ResponseHandler.errorResponse(
+          res,
+          'Please provide title or author',
+          httpStatus.BAD_REQUEST
+        )
+      const result = await this.bookService.searchBook(title, author)
+
+      return ResponseHandler.successResponse(res, result, httpStatus.OK)
+    } catch (error) {
+      logger.error(error as string)
+
+      return ResponseHandler.errorResponse(
+        res,
+        error as string,
+        httpStatus.INTERNAL_SERVER_ERROR
+      )
     }
+  }
 
-    @httpGet('/search/:authorOrTitle', errorHandler)
-    async searchBook(req: Request, res: Response, next: NextFunction) {
-      try {
-        const result = await this.bookService.searchBook(req.params.authorOrTitle);
+  @httpPost('/checkout')
+  async checkOutBook(req: Request, res: Response) {
+    try {
+      const result = await this.bookService.checkOutBook(
+        req.body.id,
+        req.body.userId,
+        req.body.checkInDate
+      )
 
-        return res.status(200).json({
-          status: 'success',
-          data: result
-        });
-      } catch (error) {
-        logger.error(error as string);
-        next(error);
-      }
+      return ResponseHandler.successResponse(res, result, httpStatus.OK)
+    } catch (error) {
+      logger.error(error as string)
+      ResponseHandler.errorResponse(
+        res,
+        error as string,
+        httpStatus.INTERNAL_SERVER_ERROR
+      )
     }
+  }
 
-    @httpPost('/check-out-book', errorHandler)
-    async checkOutBook(req: Request, res: Response, next: NextFunction) {
-      try {
-        const result = await this.bookService.checkOutBook(req.body.id, req.body.userId, req.body.checkInDate);
+  @httpPost('/checkin')
+  async checkInBook(req: Request, res: Response) {
+    try {
+      const result = await this.bookService.checkInBook(
+        req.body.id,
+        req.body.userId
+      )
 
-        return res.status(200).json({
-          status: 'success',
-          data: result
-        });
-      } catch (error) {
-        logger.error(error as string);
-        next(error);
-      }
+      return ResponseHandler.successResponse(res, result, httpStatus.OK)
+    } catch (error) {
+      logger.error(error as string)
+
+      return ResponseHandler.errorResponse(
+        res,
+        error as string,
+        httpStatus.INTERNAL_SERVER_ERROR
+      )
     }
+  }
 
-    @httpPost('/check-in-book', errorHandler)
-    async checkInBook(req: Request, res: Response, next: NextFunction) {
-      try {
-        const result = await this.bookService.checkInBook(req.body.id, req.body.userId);
+  @httpGet('/')
+  async getBooks(req: Request, res: Response) {
+    try {
+      const result = await this.bookService.getBooks()
 
-        return res.status(200).json({
-          status: 'success',
-          data: result
-        });
-      } catch (error) {
-        logger.error(error as string);
-        next(error);
-      }
+      return ResponseHandler.successResponse(res, result, httpStatus.OK)
+    } catch (error) {
+      logger.error(error as string)
+
+      return ResponseHandler.errorResponse(
+        res,
+        error as string,
+        httpStatus.INTERNAL_SERVER_ERROR
+      )
     }
+  }
 }
-
