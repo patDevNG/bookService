@@ -56,19 +56,18 @@ export class BookRepository implements IBookRepository {
    * @returns
    */
   public async searchBook(
-    title: string | null,
-    author: string | null
+    titleOrAuthor: string | null,
   ): Promise<IBook[]> {
     const queryConditions: any = []
 
-    if (title) {
-      const regexTitle = new RegExp(_.escapeRegExp(title), 'i')
+    if (titleOrAuthor) {
+      const regexTitle = new RegExp(_.escapeRegExp(titleOrAuthor), 'i')
 
       queryConditions.push({ title: regexTitle })
     }
 
-    if (author) {
-      const regexAuthor = new RegExp(_.escapeRegExp(author), 'i')
+    if (titleOrAuthor) {
+      const regexAuthor = new RegExp(_.escapeRegExp(titleOrAuthor), 'i')
       const authors = await this.authorModel.find({ name: regexAuthor }).lean()
       const authorIds = authors.map((author) => author._id)
 

@@ -49,10 +49,9 @@ export class BookService implements IBookService {
    * @returns
    */
   public async searchBook(
-    title: string | null,
-    author: string | null
+    titleOrAuthor: string | null,
   ): Promise<IBook[]> {
-    return await this.bookRepository.searchBook(title, author)
+    return await this.bookRepository.searchBook(titleOrAuthor)
   }
 
   /**

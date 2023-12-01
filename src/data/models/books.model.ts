@@ -26,13 +26,7 @@ const bookSchema = new Schema(
   { timestamps: true }
 )
 
-bookSchema.plugin(mongooseSerial, {
-  field: 'referenceId',
-  prefix: 'BK',
-  separator: '-',
-  digits: 6,
-  initCount: 'monthly',
-})
+bookSchema.plugin(mongooseSerial, { field:"referenceId", prefix:"BK", initCount:"monthly" , separator: "-", digits:5});
 
 interface IBookModel extends IBook {}
 

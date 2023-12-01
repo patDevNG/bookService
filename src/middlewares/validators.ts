@@ -1,4 +1,5 @@
 import { Response, NextFunction, Request } from 'express'
+
 import {
   userSchema,
   categorySchema,
@@ -6,6 +7,8 @@ import {
   authorSchema,
 } from '../utils/validation/validationSchema'
 import { StaticUserRepository } from '../data/repositories/static.repository'
+import { ResponseHandler } from '../utils/errors/responseHandler'
+import httpStatus from 'http-status'
 
 /**
  * Validate create user request
@@ -22,20 +25,21 @@ export const validateCreateUser = async (
     const { error } = userSchema.validate(req.body)
 
     if (error) {
-      next(error)
+      return ResponseHandler.errorResponse(res, error as unknown as string, httpStatus.BAD_REQUEST)
     }
     const checkPersonalNumber = await StaticUserRepository.findByPersonal(
       req.body.personalNumber
     )
 
     if (checkPersonalNumber) {
-      next(new Error('Personal number already exist'))
+      return ResponseHandler.errorResponse(res, 'User with personal number already exist', httpStatus.BAD_REQUEST)
     }
 
     next()
   } catch (error) {
     console.log('error', error)
-    next(error)
+
+    return ResponseHandler.errorResponse(res, error as string, httpStatus.BAD_REQUEST)
   }
 }
 
@@ -48,45 +52,44 @@ export const validateCreateCategory = async (
     const { error } = categorySchema.validate(req.body)
 
     if (error) {
-      next(error)
+      return ResponseHandler.errorResponse(res, error as unknown as string, httpStatus.BAD_REQUEST)
     }
     const existingCategory = await StaticUserRepository.findByName(
       req.body.name
     )
 
     if (existingCategory) {
-      next(new Error('category with name already exist'))
+      return ResponseHandler.errorResponse(res, 'category with name already exist', httpStatus.BAD_REQUEST)
     }
 
     next()
   } catch (error) {
-    console.log('error', error)
-    next(error)
+    return ResponseHandler.errorResponse(res, error as string, httpStatus.BAD_REQUEST)
   }
 }
 
 export const validateCreateAuthor = async (
   req: Request,
+  res: Response,
   next: NextFunction
 ) => {
   try {
-    const { error } = categorySchema.validate(req.body)
+    const { error } = authorSchema.validate(req.body)
 
     if (error) {
-      next(error)
+      return ResponseHandler.errorResponse(res, error as unknown as string , httpStatus.BAD_REQUEST)
     }
     const existingCategory = await StaticUserRepository.findByName(
       req.body.name
     )
 
     if (existingCategory) {
-      next(new Error('category with name already exist'))
+      return ResponseHandler.errorResponse(res, 'author with name already exist', httpStatus.BAD_REQUEST)
     }
 
     next()
   } catch (error) {
-    console.log('error', error)
-    next(error)
+    return ResponseHandler.errorResponse(res, error as string, httpStatus.BAD_REQUEST)
   }
 }
 
@@ -96,33 +99,35 @@ export const validateCreateAuthor = async (
  * @param res
  * @param next
  */
-export const validateCreateBook = async (req: Request, next: NextFunction) => {
+export const validateCreateBook = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { error } = bookValidationSchema.validate(req.body)
 
     if (error) {
-      next(error)
+      return ResponseHandler.errorResponse(res, error as unknown as string, httpStatus.BAD_REQUEST)
     }
     const existingCategory =
       await StaticUserRepository.findByCategoryReferenceIdCategory(
-        req.body.category
+        req.body.categoryId
       )
 
     if (!existingCategory) {
-      next(new Error('Category does not exist'))
+      return ResponseHandler.errorResponse(res, 'Category does not exist', httpStatus.BAD_REQUEST)
     }
 
     const existingAuthor = await StaticUserRepository.findAuthorByReferenceId(
-      req.body.author
+      req.body.authorId
     )
 
     if (!existingAuthor) {
-      next(new Error('Author does not exist'))
+      return ResponseHandler.errorResponse(res, 'Author does not exist', httpStatus.BAD_REQUEST)
     }
-
+    req.body.categoryId = existingCategory._id;
+    req.body.authorId = existingAuthor._id
     next()
   } catch (error) {
     console.log('error', error)
-    next(error)
+
+    return ResponseHandler.errorResponse(res, error as string, httpStatus.BAD_REQUEST)
   }
 }

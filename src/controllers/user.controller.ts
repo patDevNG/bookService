@@ -25,7 +25,7 @@ export class UserController implements IUserController {
    * @param res
    * @returns User
    */
-  @httpPost('/create-user', validateCreateUser)
+  @httpPost('/create', validateCreateUser)
   async createUser(req: Request, res: Response) {
     try {
       const result = await this.userService.create(req.body)

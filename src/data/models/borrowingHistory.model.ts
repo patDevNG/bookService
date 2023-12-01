@@ -21,13 +21,7 @@ const borrowingHistorySchema = new Schema(
   { timestamps: true }
 )
 
-borrowingHistorySchema.plugin(mongooseSerial, {
-  field: 'referenceId',
-  prefix: 'BH',
-  separator: '-',
-  digits: 6,
-  initCount: 'monthly',
-})
+borrowingHistorySchema.plugin(mongooseSerial, { field:"referenceId", prefix:"BH", initCount:"monthly" , separator: "-", digits:5});
 
 interface IBorrowingHistoryModel extends IBorrowingHistory {}
 

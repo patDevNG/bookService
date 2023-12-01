@@ -25,9 +25,10 @@ export class CategoryController implements ICategoryController {
   /**
    * createCategory
    */
-  @httpPost('/create', validateCreateCategory)
+  @httpPost('/create',validateCreateCategory)
   async createCategory(req: Request, res: Response) {
     try {
+      console.log('req.body', req.body)
       const result = await this.categoryService.create(req.body)
 
       return ResponseHandler.successResponse(res, result, httpStatus.CREATED)

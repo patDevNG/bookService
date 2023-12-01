@@ -69,18 +69,18 @@ export class BookController implements IBookController {
     }
   }
 
-  @httpGet('/search')
+  @httpGet('/')
   async searchBook(req: Request, res: Response) {
     try {
-      const { title, author } = req.query as any
+      const { search } = req.query as any
 
-      if (!title && !author)
+      if (search === undefined)
         return ResponseHandler.errorResponse(
           res,
           'Please provide title or author',
           httpStatus.BAD_REQUEST
         )
-      const result = await this.bookService.searchBook(title, author)
+      const result = await this.bookService.searchBook(search)
 
       return ResponseHandler.successResponse(res, result, httpStatus.OK)
     } catch (error) {
