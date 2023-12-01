@@ -12,7 +12,13 @@ const categorySchema = new Schema(
   { timestamps: true }
 )
 
-categorySchema.plugin(mongooseSerial, { field:"referenceId", prefix:"CAT", initCount:"monthly" , separator: "-", digits:5});
+categorySchema.plugin(mongooseSerial, {
+  field: 'referenceId',
+  prefix: 'CAT',
+  initCount: 'monthly',
+  separator: '-',
+  digits: 5,
+})
 
 interface ICategoryModel extends ICategory {}
 

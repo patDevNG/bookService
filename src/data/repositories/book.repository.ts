@@ -55,9 +55,7 @@ export class BookRepository implements IBookRepository {
    * @param author
    * @returns
    */
-  public async searchBook(
-    titleOrAuthor: string | null,
-  ): Promise<IBook[]> {
+  public async searchBook(titleOrAuthor: string | null): Promise<IBook[]> {
     const queryConditions: any = []
 
     if (titleOrAuthor) {
@@ -152,8 +150,6 @@ export class BookRepository implements IBookRepository {
           referenceId: id,
         })
         .session(session)
-
-      console.log(foundBook)
 
       if (!foundBook) {
         throw new Error('Book not found')

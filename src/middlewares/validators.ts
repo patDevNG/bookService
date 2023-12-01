@@ -25,21 +25,33 @@ export const validateCreateUser = async (
     const { error } = userSchema.validate(req.body)
 
     if (error) {
-      return ResponseHandler.errorResponse(res, error as unknown as string, httpStatus.BAD_REQUEST)
+      return ResponseHandler.errorResponse(
+        res,
+        error as unknown as string,
+        httpStatus.BAD_REQUEST
+      )
     }
     const checkPersonalNumber = await StaticUserRepository.findByPersonal(
       req.body.personalNumber
     )
 
     if (checkPersonalNumber) {
-      return ResponseHandler.errorResponse(res, 'User with personal number already exist', httpStatus.BAD_REQUEST)
+      return ResponseHandler.errorResponse(
+        res,
+        'User with personal number already exist',
+        httpStatus.BAD_REQUEST
+      )
     }
 
     next()
   } catch (error) {
     console.log('error', error)
 
-    return ResponseHandler.errorResponse(res, error as string, httpStatus.BAD_REQUEST)
+    return ResponseHandler.errorResponse(
+      res,
+      error as string,
+      httpStatus.BAD_REQUEST
+    )
   }
 }
 
@@ -52,19 +64,31 @@ export const validateCreateCategory = async (
     const { error } = categorySchema.validate(req.body)
 
     if (error) {
-      return ResponseHandler.errorResponse(res, error as unknown as string, httpStatus.BAD_REQUEST)
+      return ResponseHandler.errorResponse(
+        res,
+        error as unknown as string,
+        httpStatus.BAD_REQUEST
+      )
     }
     const existingCategory = await StaticUserRepository.findByName(
       req.body.name
     )
 
     if (existingCategory) {
-      return ResponseHandler.errorResponse(res, 'category with name already exist', httpStatus.BAD_REQUEST)
+      return ResponseHandler.errorResponse(
+        res,
+        'category with name already exist',
+        httpStatus.BAD_REQUEST
+      )
     }
 
     next()
   } catch (error) {
-    return ResponseHandler.errorResponse(res, error as string, httpStatus.BAD_REQUEST)
+    return ResponseHandler.errorResponse(
+      res,
+      error as string,
+      httpStatus.BAD_REQUEST
+    )
   }
 }
 
@@ -77,19 +101,31 @@ export const validateCreateAuthor = async (
     const { error } = authorSchema.validate(req.body)
 
     if (error) {
-      return ResponseHandler.errorResponse(res, error as unknown as string , httpStatus.BAD_REQUEST)
+      return ResponseHandler.errorResponse(
+        res,
+        error as unknown as string,
+        httpStatus.BAD_REQUEST
+      )
     }
     const existingCategory = await StaticUserRepository.findByName(
       req.body.name
     )
 
     if (existingCategory) {
-      return ResponseHandler.errorResponse(res, 'author with name already exist', httpStatus.BAD_REQUEST)
+      return ResponseHandler.errorResponse(
+        res,
+        'author with name already exist',
+        httpStatus.BAD_REQUEST
+      )
     }
 
     next()
   } catch (error) {
-    return ResponseHandler.errorResponse(res, error as string, httpStatus.BAD_REQUEST)
+    return ResponseHandler.errorResponse(
+      res,
+      error as string,
+      httpStatus.BAD_REQUEST
+    )
   }
 }
 
@@ -99,12 +135,20 @@ export const validateCreateAuthor = async (
  * @param res
  * @param next
  */
-export const validateCreateBook = async (req: Request, res: Response, next: NextFunction) => {
+export const validateCreateBook = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { error } = bookValidationSchema.validate(req.body)
 
     if (error) {
-      return ResponseHandler.errorResponse(res, error as unknown as string, httpStatus.BAD_REQUEST)
+      return ResponseHandler.errorResponse(
+        res,
+        error as unknown as string,
+        httpStatus.BAD_REQUEST
+      )
     }
     const existingCategory =
       await StaticUserRepository.findByCategoryReferenceIdCategory(
@@ -112,7 +156,11 @@ export const validateCreateBook = async (req: Request, res: Response, next: Next
       )
 
     if (!existingCategory) {
-      return ResponseHandler.errorResponse(res, 'Category does not exist', httpStatus.BAD_REQUEST)
+      return ResponseHandler.errorResponse(
+        res,
+        'Category does not exist',
+        httpStatus.BAD_REQUEST
+      )
     }
 
     const existingAuthor = await StaticUserRepository.findAuthorByReferenceId(
@@ -120,14 +168,22 @@ export const validateCreateBook = async (req: Request, res: Response, next: Next
     )
 
     if (!existingAuthor) {
-      return ResponseHandler.errorResponse(res, 'Author does not exist', httpStatus.BAD_REQUEST)
+      return ResponseHandler.errorResponse(
+        res,
+        'Author does not exist',
+        httpStatus.BAD_REQUEST
+      )
     }
-    req.body.categoryId = existingCategory._id;
+    req.body.categoryId = existingCategory._id
     req.body.authorId = existingAuthor._id
     next()
   } catch (error) {
     console.log('error', error)
 
-    return ResponseHandler.errorResponse(res, error as string, httpStatus.BAD_REQUEST)
+    return ResponseHandler.errorResponse(
+      res,
+      error as string,
+      httpStatus.BAD_REQUEST
+    )
   }
 }

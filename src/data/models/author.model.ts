@@ -14,7 +14,13 @@ const authorSchema = new Schema(
   { timestamps: true }
 )
 
-authorSchema.plugin(mongooseSerial, { field:"referenceId", prefix:"AU", initCount:"monthly" , separator: "-", digits:5});
+authorSchema.plugin(mongooseSerial, {
+  field: 'referenceId',
+  prefix: 'AU',
+  initCount: 'monthly',
+  separator: '-',
+  digits: 5,
+})
 
 interface IAuthorModel extends IAuthor {}
 
